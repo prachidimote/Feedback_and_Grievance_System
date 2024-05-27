@@ -1,106 +1,189 @@
 import { useState } from 'react';
 
 const defaultValue = {
-  name : '',
-  email : '',
-  phone : ''
-}
+  name: '',
+  email: '',
+  phone: '',
+  serviceQuality: '',
+  beverageQuality: '',
+  cleanliness: '',
+  overallExperience: '',
+};
 
 const AromaticFeedback = () => {
-    const [formData, setFormData] = useState(defaultValue);
-
-    const onValueChange = (event) => {
-      const { name, value } = event.target;
+  
+  const [formData, setFormData] = useState(defaultValue);
+  const [errors, setErrors] = useState({});
+  const [submitted, setSubmitted] = useState(false);
+  const onValueChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((prevFormData) => {
       const updatedFormData = {
-          ...formData,
-          [name]: value
+        ...prevFormData,
+        [name]: value,
       };
-      setFormData(updatedFormData);
-      console.log(updatedFormData);
+      console.log(updatedFormData); // This will now log the updated formData
+      return updatedFormData;
+    });
   };
 
-  //   const onValueChange = (e) => {
-  //     const { name, value } = e.target;
-  //     setFormData(prevFormData => {
-  //         const updatedFormData = {
-  //             ...prevFormData,
-  //             [name]: value
-  //         };
-  //         console.log(updatedFormData);
-  //         return updatedFormData;
-  //     });
-  // };
+  const validate = () => {
+    const newErrors = {};
+    if(!formData.name) newErrors.name = "Please enter your name";
+    if(!formData.email) newErrors.email = "Please enter your email id";
+    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = "Please provide a valid email address";
+    }
+    if(!formData.phone) newErrors.phone = "Please enter your phone number";
+    if(formData.phone && !/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(formData.phone)){
+      newErrors.phone = "Please provide valid phone number";
+    }
+    if(!formData.serviceQuality) newErrors.serviceQuality = "Please rate the service quality";
+    if(!formData.beverageQuality) newErrors.beverageQuality = "Please rate the beverage quality";
+    if(!formData.cleanliness) newErrors.cleanliness = "Please rate the cleanliness";
+    if(!formData.overallExperience) newErrors.overallExperience = "Please rate the overal experience";
 
+    return newErrors;
 
-    // const handleChange = (event) => {
-    //     const { name, value } = event.target;
-    //     console.log(setFormData({
-    //         ...formData,
-    //         [name]: value
-    //     }));
-    // };
+  }
 
-    return (
-        <div>
-            <h3>AromaticFeedback</h3>
-            <form className="max-w-sm mx-auto">
-                <h3 className="mx-auto font-semibold">Aromatic Bar</h3>
-                <p>We are committed to provide you with the best dining experience possible, so we welcome your comments. Please fill out this questionnaire. Thank you.</p>
-                <div className="mb-5">
-                    <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">e.g John Doe</label>
-                    <input
-                        onChange={onValueChange}
-                        // value={formData.name}
-                        name="name"
-                        type="text"
-                        id="name"
-                        className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light shadow-md"
-                        placeholder="e.g John Doe"
-                        required
-                    />
-                </div>
-                <div className="mb-5">
-                    <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">e.g abc@gmail.com</label>
-                    <input
-                        onChange={(e) => onValueChange(e)}
-                        // value={formData.email}
-                        name="email"
-                        type="email"
-                        id="email"
-                        className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light shadow-md"
-                        placeholder="e.g abc@gmail.com"
-                        required
-                    />
-                </div>
-                <div className="mb-5">
-                    <label htmlFor="phone" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">e.g 98*****45</label>
-                    <input
-                        onChange={(e) => onValueChange(e)}
-                        // value={formData.phone}
-                        name="phone"
-                        type="text"
-                        id="phone"
-                        className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light shadow-md"
-                        placeholder="98*******3"
-                        required
-                    />
-                </div>
-                <div className="flex items-start mb-5">
-                    <div className="flex items-center h-5">
-                        <input
-                            id="terms"
-                            type="checkbox"
-                            value=""
-                            className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800"
-                            required
-                        />
-                    </div>
-                    {/* <label htmlFor="terms" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">I agree with the <a href="#" className="text-blue-600 hover:underline dark:text-blue-500">terms and conditions</a></label> */}
-                </div>
-                <button type="submit" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Register new account</button>
-            </form>
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const validationErrors = validate();
+     if(Object.keys(validationErrors).length > 0){
+      setErrors(validationErrors);
+     }else {
+      localStorage.setItem('feedbackFormData', JSON.stringify(formData));
+      setSubmitted(true);
+    }
+  }
+
+  if (submitted) {
+    return <div className="text-green-500 font-semibold text-center mt-10 text-xl">Thank you for completing the information</div>;
+  }
+
+  return (
+    <div className="bg-transparent p-6 rounded-lg shadow-lg max-w-sm mx-auto">
+      <form className="max-w-sm mx-auto" onSubmit={handleSubmit}>
+        <h3 className="mx-auto font-semibold">Aromatic Bar</h3>
+        <p>We are committed to provide you with the best dining experience possible, so we welcome your comments. Please fill out this questionnaire. Thank you.</p>
+        <div className="mb-5">
+        <label className="block text-sm font-medium mb-1">Name</label>
+          <input
+            onChange={onValueChange}
+            value={formData.name}
+            name="name"
+            type="text"
+            id="name"
+            className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light shadow-md"
+            placeholder="e.g John Doe"
+          
+          />
+          {errors.name && <div className='text-red-500 text-lg'>{errors.name}</div>}
         </div>
-    );
-}
+        <div className="mb-4">
+          <label className="block text-sm font-medium mb-1">Email</label>
+          <input
+            onChange={onValueChange}
+            value={formData.email}
+            name="email"
+            type="text"
+            id="email"
+            className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light shadow-md"
+            placeholder="e.g John Doe"
+          
+          />
+          {errors.email && <div className="text-red-500 text-lg">{errors.email}</div>}
+        </div>
+        <div className="mb-5">
+        <label className="block text-sm font-medium mb-1">Phone No</label>
+          <input
+            onChange={onValueChange}
+            value={formData.phone}
+            name="phone"
+            type="text"
+            id="phone"
+            className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light shadow-md"
+            placeholder="98*******3"
+         />
+         {errors.phone && <div className='text-red-500 text-lg'>{errors.phone}</div>}
+        </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium mb-1">Please rate the quality of the service you received from your host:</label>
+          <div className="flex gap-4">
+            <label>
+              <input type="radio" name="serviceQuality" value="Excellent" checked={formData.serviceQuality === 'Excellent'} onChange={onValueChange} /> Excellent
+            </label>
+            <label>
+              <input type="radio" name="serviceQuality" value="Good" checked={formData.serviceQuality === 'Good'} onChange={onValueChange} /> Good
+            </label>
+            <label>
+              <input type="radio" name="serviceQuality" value="Fair" checked={formData.serviceQuality === 'Fair'} onChange={onValueChange} /> Fair
+            </label>
+            <label>
+              <input type="radio" name="serviceQuality" value="Bad" checked={formData.serviceQuality === 'Bad'} onChange={onValueChange} /> Bad
+            </label>
+          </div>
+          {errors.serviceQuality && <div className='text-red-500 text-lg'>{errors.serviceQuality}</div>}
+        </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium mb-1">Please rate the quality of your beverage:</label>
+          <div className="flex gap-4">
+            <label>
+              <input type="radio" name="beverageQuality" value="Excellent" checked={formData.beverageQuality === 'Excellent'} onChange={onValueChange} /> Excellent
+            </label>
+            <label>
+              <input type="radio" name="beverageQuality" value="Good" checked={formData.beverageQuality === 'Good'} onChange={onValueChange} /> Good
+            </label>
+            <label>
+              <input type="radio" name="beverageQuality" value="Fair" checked={formData.beverageQuality === 'Fair'} onChange={onValueChange} /> Fair
+            </label>
+            <label>
+              <input type="radio" name="beverageQuality" value="Bad" checked={formData.beverageQuality === 'Bad'} onChange={onValueChange} /> Bad
+            </label>
+          </div>
+          {errors.beverageQuality && <div className='text-red-500 text-lg'>{errors.beverageQuality}</div>}
+        </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium mb-1">Was our restaurant clean?</label>
+          <div className="flex gap-4">
+            <label>
+              <input type="radio" name="cleanliness" value="Excellent" checked={formData.cleanliness === 'Excellent'} onChange={onValueChange} /> Excellent
+            </label>
+            <label>
+              <input type="radio" name="cleanliness" value="Good" checked={formData.cleanliness === 'Good'} onChange={onValueChange} /> Good
+            </label>
+            <label>
+              <input type="radio" name="cleanliness" value="Fair" checked={formData.cleanliness === 'Fair'} onChange={onValueChange} /> Fair
+            </label>
+            <label>
+              <input type="radio" name="cleanliness" value="Bad" checked={formData.cleanliness === 'Bad'} onChange={onValueChange} /> Bad
+            </label>
+          </div>
+          {errors.cleanliness && <div className='text-red-500 text-lg'>{errors.cleanliness}</div>}
+        </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium mb-1">Please rate your overall dining experience:</label>
+          <div className="flex gap-4">
+            <label>
+              <input type="radio" name="overallExperience" value="Excellent" checked={formData.overallExperience === 'Excellent'} onChange={onValueChange} /> Excellent
+            </label>
+            <label>
+              <input type="radio" name="overallExperience" value="Good" checked={formData.overallExperience === 'Good'} onChange={onValueChange} /> Good
+            </label>
+            <label>
+              <input type="radio" name="overallExperience" value="Fair" checked={formData.overallExperience === 'Fair'} onChange={onValueChange} /> Fair
+            </label>
+            <label>
+              <input type="radio" name="overallExperience" value="Bad" checked={formData.overallExperience === 'Bad'} onChange={onValueChange} /> Bad
+            </label>
+          </div>
+          {errors.overallExperience && <div className='text-red-500 text-lg'>{errors.overallExperience}</div>}
+        </div>
+        <button type="submit" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
+      </form>
+    </div>
+  );
+};
 
 export default AromaticFeedback;
