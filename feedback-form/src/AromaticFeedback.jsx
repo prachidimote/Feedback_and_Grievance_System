@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const defaultValue = {
   name: '',
@@ -15,6 +16,8 @@ const AromaticFeedback = () => {
   const [formData, setFormData] = useState(defaultValue);
   const [errors, setErrors] = useState({});
   const [submitted, setSubmitted] = useState(false);
+  const navigate = useNavigate();
+
   const onValueChange = (event) => {
     const { name, value } = event.target;
     setFormData((prevFormData) => {
@@ -50,13 +53,25 @@ const AromaticFeedback = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const validationErrors = validate();
-     if(Object.keys(validationErrors).length > 0){
+    if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
-     }else {
-      localStorage.setItem('feedbackFormData', JSON.stringify(formData));
+    } else {
+      // Retrieve existing records from localStorage
+      let existingData = JSON.parse(localStorage.getItem('feedbackFormData'));
+      // Check if existingData is not an array
+      if (!Array.isArray(existingData)) {
+        // If it's not an array or doesn't exist, initialize it as an empty array
+        existingData = [];
+      }
+      // Add new form data to the existing records
+      const updatedData = [...existingData, formData];
+      // Save updated records back to localStorage
+      localStorage.setItem('feedbackFormData', JSON.stringify(updatedData));
       setSubmitted(true);
+      navigate('/table-page');
     }
-  }
+  };
+  
 
   if (submitted) {
     return <div className="text-green-500 font-semibold text-center mt-10 text-xl">Thank you for completing the information</div>;
